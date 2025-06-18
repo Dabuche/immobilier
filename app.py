@@ -194,75 +194,85 @@ if latitude is not None and longitude is not None:
     #x, y = transformer.transform(2.413867, 48.880048)
     # Générer des menus déroulants pour chaque variable
     variables_selectionnees = {}
-    variables = df_coefficients['variable'].unique()
+variables = df_coefficients['variable'].unique()
 
+dico={}
    
-    for variable in variables:
-        if variable == "surface du bâti":
-            modalite_surface = classer_surface_batie(surface_batie/nombre_logement)
-            variables_selectionnees[variable] = modalite_surface
-        else:
-            
-            df = df_coefficients[df_coefficients['variable']==variable].reset_index(drop=True)
-            
-            index_defaut = 0
-            if variable == "info vendeur":
-                id_ =  list(df[df['modalité']=="PERSONNE PHYSIQUE"].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]
-            if variable == "nature de la mutation":
-                id_ =  list(df[df['modalité']=="vente"].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]
-            if variable == "maison":
-                id_ =  list(df[df['modalité']=="appartement"].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]
-            if variable == "occupation du logement":
-                id_ =  list(df[df['modalité']=="OCCUPATION PAR UN LOCATAIRE"].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]
-            if variable == "periode de construction":
-                id_ =  list(df[df['modalité']=="après 2017"].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]
-            if variable == "surface du local":
-                id_ =  list(df[df['modalité']=="Aucun"].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]
-            if variable == 'nb pièces':
-                id_ =  list(df[df['modalité']=="T2"].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]
-            if variable == "Nombre d'étage de l'immeuble / maison":
-                id_ =  list(df[df['modalité']=="-"].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]
-             
-            if variable == 'vente en bloc':
-                id_ =  list(df[df['modalité']=='Non'].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]    
-            if variable == "Nombre de logements (si vente en bloc)":
-                id_ =  list(df[df['modalité']=='Pas de vente en bloc'].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]       
-            if variable == "surface du terrain":
-                id_ =  list(df[df['modalité']=="Pas de terrain"].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]       
-            if variable == "garage":
-                id_ =  list(df[df['modalité']=="Non"].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]               
-            modalites = df_coefficients[df_coefficients['variable'] == variable]['modalité'].unique()
-            selection = st.selectbox(f"Choisissez une modalité pour {variable}", modalites,index=index_defaut)
-            variables_selectionnees[variable] = selection
+for variable in variables:
+    if variable != "surface du bâti":
+       
+        df = df_coefficients[df_coefficients['variable']==variable].reset_index(drop=True)
+        
+        index_defaut = 0
+        if variable == "info vendeur":
+            id_ =  list(df[df['modalité']=="PERSONNE PHYSIQUE"].index)
+            if len(id_)>0:
+                index_defaut = id_[0]
+        if variable == "nature de la mutation":
+            id_ =  list(df[df['modalité']=="vente"].index)
+            if len(id_)>0:
+                index_defaut = id_[0]
+        if variable == "maison":
+            id_ =  list(df[df['modalité']=="appartement"].index)
+            if len(id_)>0:
+                index_defaut = id_[0]
+        if variable == "occupation du logement":
+            id_ =  list(df[df['modalité']=="OCCUPATION PAR UN LOCATAIRE"].index)
+            if len(id_)>0:
+                index_defaut = id_[0]
+        if variable == "periode de construction":
+            id_ =  list(df[df['modalité']=="après 2017"].index)
+            if len(id_)>0:
+                index_defaut = id_[0]
+        if variable == "surface du local":
+            id_ =  list(df[df['modalité']=="Aucun"].index)
+            if len(id_)>0:
+                index_defaut = id_[0]
+        if variable == 'nb pièces':
+            id_ =  list(df[df['modalité']=="T2"].index)
+            if len(id_)>0:
+                index_defaut = id_[0]
+        if variable == "Nombre d'étage de l'immeuble / maison":
+            id_ =  list(df[df['modalité']=="-"].index)
+            if len(id_)>0:
+                index_defaut = id_[0]
+         
+        if variable == 'vente en bloc':
+            id_ =  list(df[df['modalité']=='Non'].index)
+            if len(id_)>0:
+                index_defaut = id_[0]    
+        if variable == "Nombre de logements (si vente en bloc)":
+            id_ =  list(df[df['modalité']=='Pas de vente en bloc'].index)
+            if len(id_)>0:
+                index_defaut = id_[0]       
+        if variable == "surface du terrain":
+            id_ =  list(df[df['modalité']=="Pas de terrain"].index)
+            if len(id_)>0:
+                index_defaut = id_[0]       
+        if variable == "garage":
+            id_ =  list(df[df['modalité']=="Non"].index)
+            if len(id_)>0:
+                index_defaut = id_[0]               
+        modalites = df_coefficients[df_coefficients['variable'] == variable]['modalité'].unique()
+        dico[variable]=modalites
+    
+for variable in variables:
+    if variable != "surface du bâti":        
+        selection = st.selectbox(f"Choisissez une modalité pour {variable}", dico[variable],index=index_defaut)
+        
 
 
 # Bouton pour calculer l'estimation
 if  st.button("Estimer"):
         # Calcul de la constante géographique et de la région en fonction des coordonnées Lambert
+        modalite_surface = classer_surface_batie(surface_batie/nombre_logement)
+        variables_selectionnees["surface du bâti"] = modalite_surface
+        for variable in variables:
+            if variable != "surface du bâti":        
+                selection = st.selectbox(f"Choisissez une modalité pour {variable}", dico[variable],index=index_defaut)
+                variables_selectionnees[variable] = selection
+        
+ 
         constante_geographique,zonage  = calculer_constante_geographique_et_region(x_lambert, y_lambert)
         constante_geographique = round(constante_geographique, 0)
         #st.write(f"Departement déterminée automatiquement : {dep}")
