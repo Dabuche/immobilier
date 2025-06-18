@@ -59,7 +59,7 @@ df_coefficients = df_coefficients.drop(columns=['main'])
 
 df_geographique= pd.DataFrame(columns=["x","y","pred_exp","zonage"])
 for ii in ["A","C","Abis","B1","B2"]:
-    df_geographique_inter=pd.read_parquet(base_geo_predi_corrig_"+str(ii)+".parquet", engine='pyarrow')
+    df_geographique_inter=pd.read_parquet("base_geo_predi_corrig_"+str(ii)+".parquet", engine='pyarrow')
     df_geographique_inter['zonage']=str(ii)
     df_geographique = pd.concat([df_geographique,df_geographique_inter])
 
