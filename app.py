@@ -164,102 +164,104 @@ adresse = st.text_input("Adresse = num et nom de voie + code postale", "33 rue d
 
 longitude, latitude, =   2.396482,48.879845
 
-# Géocodage si l'adresse est remplie
-if len(adresse)>0:
-    longitude, latitude,  corr = geocode_address_ban(adresse)  # Géocode et remplace les coordonnées
-    
-    
-    if corr ==1:
-        st.write(f"Géocodage de l'adresse {adresse} avec la ban")
-        
-    else:
-        st.write(f"Géocodage de l'adresse {adresse} sans la ban")
-    
-    if latitude is None or longitude is None:
-        st.error("Coordonnées GPS non valides pour l'adresse saisie.")
-    
-
-# Afficher les champs de latitude et de longitude, qui sont maintenant modifiés si l'adresse est saisie
-latitude = st.number_input("Latitude (GPS)", value=latitude, format="%.6f")
-longitude = st.number_input("Longitude (GPS)", value=longitude, format="%.6f")
-surface_batie = st.number_input("Surface totale du bâtis (en m²)", min_value=10, step=1) 
-nombre_logement = st.number_input("Nombre de logements dans l'opération", min_value=1, step=1) 
-
-
-# Vérification si les coordonnées GPS sont valides
-if latitude is not None and longitude is not None:
-    # Conversion des coordonnées GPS en coordonnées Lambert 93
-    x_lambert, y_lambert = transformer.transform(longitude, latitude)
-    #x, y = transformer.transform(2.413867, 48.880048)
-    # Générer des menus déroulants pour chaque variable
-    variables_selectionnees = {}
-    variables = df_coefficients['variable'].unique()
-
+with st.form("formulaire_estimation"):
+   # Géocodage si l'adresse est remplie
+   if len(adresse)>0:
+       longitude, latitude,  corr = geocode_address_ban(adresse)  # Géocode et remplace les coordonnées
+       
+       
+       if corr ==1:
+           st.write(f"Géocodage de l'adresse {adresse} avec la ban")
+           
+       else:
+           st.write(f"Géocodage de l'adresse {adresse} sans la ban")
+       
+       if latitude is None or longitude is None:
+           st.error("Coordonnées GPS non valides pour l'adresse saisie.")
+       
    
-    for variable in variables:
-        if variable == "surface du bâti":
-            modalite_surface = classer_surface_batie(surface_batie/nombre_logement)
-            variables_selectionnees[variable] = modalite_surface
-        else:
-            
-            df = df_coefficients[df_coefficients['variable']==variable].reset_index(drop=True)
-            
-            index_defaut = 0
-            if variable == "info vendeur":
-                id_ =  list(df[df['modalité']=="PERSONNE PHYSIQUE"].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]
-            if variable == "nature de la mutation":
-                id_ =  list(df[df['modalité']=="vente"].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]
-            if variable == "maison":
-                id_ =  list(df[df['modalité']=="appartement"].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]
-            if variable == "occupation du logement":
-                id_ =  list(df[df['modalité']=="OCCUPATION PAR UN LOCATAIRE"].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]
-            if variable == "periode de construction":
-                id_ =  list(df[df['modalité']=="après 2017"].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]
-            if variable == "surface du local":
-                id_ =  list(df[df['modalité']=="Aucun"].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]
-            if variable == 'nb pièces':
-                id_ =  list(df[df['modalité']=="T2"].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]
-            if variable == "Nombre d'étage de l'immeuble / maison":
-                id_ =  list(df[df['modalité']=="-"].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]
-             
-            if variable == 'vente en bloc':
-                id_ =  list(df[df['modalité']=='Non'].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]    
-            if variable == "Nombre de logements (si vente en bloc)":
-                id_ =  list(df[df['modalité']=='Pas de vente en bloc'].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]       
-            if variable == "surface du terrain":
-                id_ =  list(df[df['modalité']=="Pas de terrain"].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]       
-            if variable == "garage":
-                id_ =  list(df[df['modalité']=="Non"].index)
-                if len(id_)>0:
-                    index_defaut = id_[0]               
-            modalites = df_coefficients[df_coefficients['variable'] == variable]['modalité'].unique()
-            selection = st.selectbox(f"Choisissez une modalité pour {variable}", modalites,index=index_defaut)
-            variables_selectionnees[variable] = selection
-
-    # Bouton pour calculer l'estimation
-    if st.button("Estimer"):
+   # Afficher les champs de latitude et de longitude, qui sont maintenant modifiés si l'adresse est saisie
+   latitude = st.number_input("Latitude (GPS)", value=latitude, format="%.6f")
+   longitude = st.number_input("Longitude (GPS)", value=longitude, format="%.6f")
+   surface_batie = st.number_input("Surface totale du bâtis (en m²)", min_value=10, step=1) 
+   nombre_logement = st.number_input("Nombre de logements dans l'opération", min_value=1, step=1) 
+   
+   
+   # Vérification si les coordonnées GPS sont valides
+   if latitude is not None and longitude is not None:
+       # Conversion des coordonnées GPS en coordonnées Lambert 93
+       x_lambert, y_lambert = transformer.transform(longitude, latitude)
+       #x, y = transformer.transform(2.413867, 48.880048)
+       # Générer des menus déroulants pour chaque variable
+       variables_selectionnees = {}
+       variables = df_coefficients['variable'].unique()
+   
+      
+       for variable in variables:
+           if variable == "surface du bâti":
+               modalite_surface = classer_surface_batie(surface_batie/nombre_logement)
+               variables_selectionnees[variable] = modalite_surface
+           else:
+               
+               df = df_coefficients[df_coefficients['variable']==variable].reset_index(drop=True)
+               
+               index_defaut = 0
+               if variable == "info vendeur":
+                   id_ =  list(df[df['modalité']=="PERSONNE PHYSIQUE"].index)
+                   if len(id_)>0:
+                       index_defaut = id_[0]
+               if variable == "nature de la mutation":
+                   id_ =  list(df[df['modalité']=="vente"].index)
+                   if len(id_)>0:
+                       index_defaut = id_[0]
+               if variable == "maison":
+                   id_ =  list(df[df['modalité']=="appartement"].index)
+                   if len(id_)>0:
+                       index_defaut = id_[0]
+               if variable == "occupation du logement":
+                   id_ =  list(df[df['modalité']=="OCCUPATION PAR UN LOCATAIRE"].index)
+                   if len(id_)>0:
+                       index_defaut = id_[0]
+               if variable == "periode de construction":
+                   id_ =  list(df[df['modalité']=="après 2017"].index)
+                   if len(id_)>0:
+                       index_defaut = id_[0]
+               if variable == "surface du local":
+                   id_ =  list(df[df['modalité']=="Aucun"].index)
+                   if len(id_)>0:
+                       index_defaut = id_[0]
+               if variable == 'nb pièces':
+                   id_ =  list(df[df['modalité']=="T2"].index)
+                   if len(id_)>0:
+                       index_defaut = id_[0]
+               if variable == "Nombre d'étage de l'immeuble / maison":
+                   id_ =  list(df[df['modalité']=="-"].index)
+                   if len(id_)>0:
+                       index_defaut = id_[0]
+                
+               if variable == 'vente en bloc':
+                   id_ =  list(df[df['modalité']=='Non'].index)
+                   if len(id_)>0:
+                       index_defaut = id_[0]    
+               if variable == "Nombre de logements (si vente en bloc)":
+                   id_ =  list(df[df['modalité']=='Pas de vente en bloc'].index)
+                   if len(id_)>0:
+                       index_defaut = id_[0]       
+               if variable == "surface du terrain":
+                   id_ =  list(df[df['modalité']=="Pas de terrain"].index)
+                   if len(id_)>0:
+                       index_defaut = id_[0]       
+               if variable == "garage":
+                   id_ =  list(df[df['modalité']=="Non"].index)
+                   if len(id_)>0:
+                       index_defaut = id_[0]               
+               modalites = df_coefficients[df_coefficients['variable'] == variable]['modalité'].unique()
+               selection = st.selectbox(f"Choisissez une modalité pour {variable}", modalites,index=index_defaut)
+               variables_selectionnees[variable] = selection
+   submitted = st.form_submit_button("Estimer")
+ 
+# Bouton pour calculer l'estimation
+if submitted:
         # Calcul de la constante géographique et de la région en fonction des coordonnées Lambert
         constante_geographique,zonage  = calculer_constante_geographique_et_region(x_lambert, y_lambert)
         constante_geographique = round(constante_geographique, 0)
