@@ -37,7 +37,7 @@ API_BAN_URL = 'https://api-adresse.data.gouv.fr/search/csv/'
 chemin = r'U:\DEFP\DFE\Dph\DPH010\11 PROJETDATA\valo_actifs_immo_residentiel\python_final\api_der\api_simple'
 
  
-passage_postal_insee = pd.read_csv(os.path.join(chemin,"passage_postal_insee.csv"),sep=";")  
+passage_postal_insee = pd.read_csv("passage_postal_insee.csv",sep=";")  
 passage_postal_insee.columns= ['code_insee', 'code_postal']
 passage_postal_insee['code_insee'] =  passage_postal_insee['code_insee'].apply(lambda x: ("0"+str(x))[-5:])
 passage_postal_insee['code_postal'] =  passage_postal_insee['code_postal'].apply(lambda x: ("0"+str(x))[-5:])
@@ -46,7 +46,7 @@ passage_postal_insee['code_postal'] =  passage_postal_insee['code_postal'].apply
  
 
 # Charger les coefficients à partir d'un fichier CSV
-df_coefficients = pd.read_excel(os.path.join(chemin, 'coefficients_modeles.xlsx')  )
+df_coefficients = pd.read_excel('coefficients_modeles.xlsx'  )
 #contours_departements  = gpd.read_file(r'C:\Users\david\DVF\contour-des-departements.geojson')
 
 df_coefficients['C'] = 0
@@ -59,7 +59,7 @@ df_coefficients = df_coefficients.drop(columns=['main'])
 
 df_geographique= pd.DataFrame(columns=["x","y","pred_exp","zonage"])
 for ii in ["A","C","Abis","B1","B2"]:
-    df_geographique_inter=pd.read_parquet(chemin + "/base_geo_predi_corrig_"+str(ii)+".parquet", engine='pyarrow')
+    df_geographique_inter=pd.read_parquet(base_geo_predi_corrig_"+str(ii)+".parquet", engine='pyarrow')
     df_geographique_inter['zonage']=str(ii)
     df_geographique = pd.concat([df_geographique,df_geographique_inter])
 
