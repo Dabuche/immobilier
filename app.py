@@ -197,7 +197,7 @@ if latitude is not None and longitude is not None:
 variables = df_coefficients['variable'].unique()
 
 dico={}
-   
+dico2 ={} 
 for variable in variables:
     if variable != "surface du bâti":
        
@@ -255,10 +255,11 @@ for variable in variables:
                 index_defaut = id_[0]               
         modalites = df_coefficients[df_coefficients['variable'] == variable]['modalité'].unique()
         dico[variable]=modalites
+        dico2[variable]=index_defaut
     
 for variable in variables:
     if variable != "surface du bâti":        
-        selection = st.selectbox(f"Choisissez une modalité pour {variable}", dico[variable],index=index_defaut)
+        selection = st.selectbox(f"Choisissez une modalité pour {variable}", dico[variable],index=dico2[variable])
         
 
 
@@ -269,7 +270,7 @@ if  st.button("Estimer"):
         variables_selectionnees["surface du bâti"] = modalite_surface
         for variable in variables:
             if variable != "surface du bâti":        
-                selection = st.selectbox(f"Choisissez une modalité pour {variable}", dico[variable],index=index_defaut)
+                selection = st.selectbox(f"Choisissez une modalité pour {variable}", dico[variable],index=dico2[variable])
                 variables_selectionnees[variable] = selection
         
  
