@@ -1,0 +1,12 @@
+pandas
+streamlit
+numpy
+scipy
+matplotlib
+osmnx
+geopy
+geopandas
+pyproj
+requests
+pickle-mixin
+openpyxl
