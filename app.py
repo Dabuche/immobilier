@@ -27,14 +27,8 @@ from datetime import datetime
 import os
 
 
-os.environ['HTTP_PROXY'] = 'http://pxy-http-srv.serv.cdc.fr:8080'
-os.environ['HTTPS_PROXY'] = 'http://pxy-http-srv.serv.cdc.fr:8080'
-
 
 API_BAN_URL = 'https://api-adresse.data.gouv.fr/search/csv/'
-
-
-chemin = r'U:\DEFP\DFE\Dph\DPH010\11 PROJETDATA\valo_actifs_immo_residentiel\python_final\api_der\api_simple'
 
  
 passage_postal_insee = pd.read_csv("passage_postal_insee.csv",sep=";")  
@@ -122,6 +116,7 @@ def geocode_address_ban(adress):
     corr = 0
     location = (None, None)
     res =None, None, None
+    """
     if adress[-5:].isdigit() and adress[-6]==" " :
         code_postal = adress[-5:]
         numero_et_nomvoie = adress[:-6]
@@ -148,7 +143,7 @@ def geocode_address_ban(adress):
 
         except:
             corr = 0
-                
+    """            
     if corr==0: 
         try:        
                 location = ox.geocode(address)
