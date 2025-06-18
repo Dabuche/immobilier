@@ -260,7 +260,7 @@ for variable in variables:
 for variable in variables:
     if variable != "surface du bâti":        
         selection = st.selectbox(f"Choisissez une modalité pour {variable}", dico[variable],index=dico2[variable])
-        
+        variables_selectionnees[variable] = selection
 
 
 # Bouton pour calculer l'estimation
@@ -268,11 +268,6 @@ if  st.button("Estimer"):
         # Calcul de la constante géographique et de la région en fonction des coordonnées Lambert
         modalite_surface = classer_surface_batie(surface_batie/nombre_logement)
         variables_selectionnees["surface du bâti"] = modalite_surface
-        for variable in variables:
-            if variable != "surface du bâti":        
-                selection = st.selectbox(f"Choisissez une modalité pour {variable}", dico[variable],index=dico2[variable])
-                variables_selectionnees[variable] = selection
-        
  
         constante_geographique,zonage  = calculer_constante_geographique_et_region(x_lambert, y_lambert)
         constante_geographique = round(constante_geographique, 0)
